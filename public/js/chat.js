@@ -1,4 +1,5 @@
 const chatForm = document.querySelector('#message-form');
+const chatInput = chatForm.querySelector('input');
 const locationButton = document.querySelector('#send-location');
 
 
@@ -11,7 +12,12 @@ socket.on('message', (message) => {
 chatForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const message = e.target.elements.message.value;
-    socket.emit('chatMessage', message);
+    chatForm.querySelector('button').setAttribute('disabled', 'disabled');
+    socket.emit('chatMessage', message,  (ack) => {
+        chatForm.querySelector('button').removeAttribute('disabled');
+        chatInput.focus();
+        console.log(ack);
+    });
     e.target.elements.message.value = "";
 })
 
@@ -20,12 +26,17 @@ locationButton.addEventListener('click', () => {
         return alert('Geolocation is not supported by your browser.');
     }
 
+    locationButton.setAttribute('disabled', 'disabled');
     navigator.geolocation.getCurrentPosition((position) => {
         const longitude = position.coords.longitude;
         const latitude = position.coords.latitude;
         socket.emit('sendLocation', {
             longitude,
             latitude
+        }, () => {
+            locationButton.removeAttribute('disabled');
+
+            console.log('Location sent.')
         });
     })
-})
+});
