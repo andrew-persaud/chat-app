@@ -70,6 +70,7 @@ socket.on('roomData', ({room, users}) => {
         room,
         users
     });
+    $users.innerHTML = '';
     $users.insertAdjacentHTML('beforeend', html);
 
 })
