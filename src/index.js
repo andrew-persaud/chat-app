@@ -48,10 +48,10 @@ io.on('connection', (socket) => {
     socket.on('chatMessage', (message, callback) => {
         const user = getUser(socket.id);
 
-        const filter = new Filter();
-        if(filter.isProfane(message)) {
-            return callback('Please do not use profanity');
-        }
+        // const filter = new Filter();
+        // if(filter.isProfane(message)) {
+        //     return callback('Please do not use profanity');
+        // }
         
         io.to(user.room).emit('message', generateMessage(user.username, message)); //line to every user
         callback('Message sent.');
